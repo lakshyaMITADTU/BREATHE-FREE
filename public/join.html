@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breathe Free — Stop Smoking</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ═══ RESET ═══════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ember:#e85c1a;--fresh:#2ec4a9;--cream:#f7f2ea;
+  --dark:#0a0a0a;--gpt:#10a37f;--claude:#c9813a;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--cream);overflow-x:hidden}
+
+/* ═══ PARALLAX ════════════════════════════════════════════ */
+.parallax-section{position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.parallax-bg{position:absolute;inset:-20%;width:140%;height:140%;will-change:transform;background-size:cover;background-position:center}
+.sec-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+
+/* ═══ NAV ══════════════════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent);transition:all .4s}
+nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-logo{font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.05em}
+.nav-logo span{color:var(--fresh)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(247,242,234,.5);text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--fresh)}
+@media(max-width:640px){.nav-links{display:none}}
+
+/* ═══ REVEAL ══════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}.rd4{transition-delay:.4s}
+
+/* ═══ SECTION 1 — HERO ════════════════════════════════════ */
+#hero{background:#0a0a0a;min-height:320vh;align-items:flex-start;padding-top:0}
+#hero .parallax-bg{background:radial-gradient(ellipse at 50% 60%,#2a0a00,#0a0a0a 70%)}
+#cig-canvas{position:fixed;top:60px;left:0;width:100vw;height:100vh;pointer-events:none;z-index:5;transition:opacity .4s}
+#hero .hero-content{position:sticky;top:35vh;margin-top:25vh;z-index:10;text-align:center;padding:2rem;max-width:900px}
+.hero-eyebrow{font-size:.75rem;font-weight:500;letter-spacing:.4em;text-transform:uppercase;color:var(--ember);margin-bottom:1.5rem;opacity:0;animation:fadeUp 1s .3s forwards}
+.hero-title{font-family:'Inter',sans-serif;font-size:clamp(4rem,10vw,9rem);font-weight:900;line-height:.9;letter-spacing:-.03em;margin-bottom:2rem;opacity:0;animation:fadeUp 1s .6s forwards}
+.hero-title .line-fresh{color:var(--fresh);font-style:italic;display:block}
+.hero-sub{font-size:1.1rem;font-weight:300;color:rgba(247,242,234,.6);max-width:500px;margin:0 auto 3rem;line-height:1.7;opacity:0;animation:fadeUp 1s .9s forwards}
+.scroll-indicator{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeUp 1s 1.5s forwards;color:rgba(247,242,234,.4);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;z-index:10}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(247,242,234,.4),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:.4}50%{transform:scaleY(.6);opacity:.1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ SECTION 2 — DAMAGE ══════════════════════════════════ */
+#damage{background:#1a0a00;min-height:150vh}
+#damage .parallax-bg{background:radial-gradient(ellipse at 20% 50%,rgba(180,60,0,.3),transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(80,20,0,.2),transparent 60%),#1a0a00}
+.section-inner{position:relative;z-index:10;width:100%;max-width:1200px;padding:6rem 2rem;margin:0 auto}
+.section-label{font-size:.7rem;letter-spacing:.5em;text-transform:uppercase;color:var(--ember);margin-bottom:4rem;font-weight:500}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05)}
+.stat-card{background:rgba(10,5,0,.8);padding:3rem 2.5rem;position:relative;overflow:hidden;transition:background .3s}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ember);transform:scaleY(0);transition:transform .4s ease;transform-origin:bottom}
+.stat-card:hover{background:rgba(20,8,0,.9)}.stat-card:hover::before{transform:scaleY(1)}
+.stat-num{font-family:'Inter',sans-serif;font-size:clamp(3rem,6vw,5rem);font-weight:900;color:var(--ember);line-height:1;margin-bottom:.5rem}
+.stat-label{font-size:.85rem;color:rgba(247,242,234,.5);line-height:1.6}
+
+/* ═══ SECTION 3 — TIMELINE ════════════════════════════════ */
+#timeline{background:#080c10;min-height:150vh}
+#timeline .parallax-bg{background:radial-gradient(ellipse at 50% 0%,rgba(46,196,169,.1),transparent 60%),#080c10}
+.timeline-title{font-family:'Inter',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:700;line-height:1.1;margin-bottom:1rem}
+.timeline-title em{color:var(--fresh);font-style:italic}
+.timeline-subtitle{font-size:1rem;color:rgba(247,242,234,.5);margin-bottom:5rem;font-weight:300;max-width:500px}
+.timeline-items{position:relative;padding-left:2rem}
+.timeline-items::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--fresh),rgba(46,196,169,.1))}
+.timeline-item{position:relative;padding-bottom:3.5rem;padding-left:2.5rem;opacity:0;transform:translateX(-20px);transition:opacity .6s ease,transform .6s ease}
+.timeline-item.visible{opacity:1;transform:translateX(0)}
+.timeline-item::before{content:'';position:absolute;left:-5px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--fresh);box-shadow:0 0 15px rgba(46,196,169,.5)}
+.time-badge{display:inline-block;font-size:.7rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--fresh);background:rgba(46,196,169,.1);border:1px solid rgba(46,196,169,.2);padding:.25rem .75rem;border-radius:20px;margin-bottom:.75rem}
+.time-event{font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:.4rem}
+.time-desc{font-size:.9rem;color:rgba(247,242,234,.5);font-weight:300;line-height:1.7;max-width:420px}
+
+/* ═══ SECTION 4 — TRANSFORM ═══════════════════════════════ */
+#transform{background:#020f0d;min-height:150vh}
+#transform .parallax-bg{background:radial-gradient(ellipse at 30% 60%,rgba(46,196,169,.2),transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(46,196,169,.08),transparent 50%),#020f0d}
+.transform-layout{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+@media(max-width:768px){.transform-layout{grid-template-columns:1fr;gap:3rem}}
+.big-title{font-family:'Inter',sans-serif;font-size:clamp(3rem,6vw,5.5rem);font-weight:900;line-height:.95;letter-spacing:-.03em;margin-bottom:2rem}
+.big-title span{color:var(--fresh);font-style:italic;display:block}
+.transform-text p{font-size:1rem;line-height:1.8;color:rgba(247,242,234,.55);font-weight:300;margin-bottom:2.5rem;max-width:400px}
+.cta-btn{display:inline-flex;align-items:center;gap:1rem;background:var(--fresh);color:#020f0d;font-size:.85rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:1.1rem 2.5rem;border:none;cursor:pointer;text-decoration:none;transition:all .3s;position:relative;overflow:hidden}
+.cta-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);transform:translateX(-100%);transition:transform .4s}
+.cta-btn:hover::before{transform:translateX(0)}.cta-btn:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(46,196,169,.3)}
+.benefit-pills{display:flex;flex-direction:column;gap:1rem}
+.pill{display:flex;align-items:center;gap:1.25rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:1.25rem 1.5rem;transition:all .3s}
+.pill:hover{background:rgba(46,196,169,.06);border-color:rgba(46,196,169,.2);transform:translateX(8px)}
+.pill-icon{font-size:1.5rem;width:2.5rem;flex-shrink:0;text-align:center}
+.pill-text strong{display:block;font-size:.95rem;font-weight:500;margin-bottom:.2rem}
+.pill-text span{font-size:.8rem;color:rgba(247,242,234,.4);font-weight:300}
+
+/* ═══ SECTION 5 — QUOTE ═══════════════════════════════════ */
+#quote{background:var(--fresh);min-height:60vh}
+#quote .parallax-bg{background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(0,0,0,.03) 40px,rgba(0,0,0,.03) 41px),var(--fresh)}
+.quote-inner{text-align:center;max-width:800px;padding:6rem 2rem;position:relative;z-index:10}
+.quote-mark{font-family:'Inter',sans-serif;font-size:8rem;line-height:.5;color:rgba(2,15,13,.15);display:block;margin-bottom:2rem}
+.quote-text{font-family:'Inter',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;color:#020f0d;line-height:1.3;margin-bottom:2rem;font-style:italic}
+.quote-attr{font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(2,15,13,.5)}
+
+/* ═══ SECTION 6 — AI CHAT ═════════════════════════════════ */
+#ai-chat{background:#060d12;min-height:100vh}
+#ai-chat .parallax-bg{background:radial-gradient(ellipse at 50% 50%,rgba(46,196,169,.07),transparent 70%),#060d12}
+.chat-header{text-align:center;margin-bottom:3rem}
+.chat-header h2{font-family:'Inter',sans-serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:1rem}
+.chat-header h2 em{color:var(--fresh);font-style:italic}
+.chat-header p{font-size:.95rem;color:rgba(247,242,234,.45);font-weight:300}
+.ai-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.ai-tab{flex:1;padding:.9rem;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(247,242,234,.4);font-size:.8rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif}
+.ai-tab.active[data-ai="claude"]{background:rgba(201,129,58,.15);border-color:var(--claude);color:var(--claude)}
+.ai-tab.active[data-ai="gpt"]{background:rgba(16,163,127,.15);border-color:var(--gpt);color:var(--gpt)}
+.ai-tab:hover{border-color:rgba(255,255,255,.3);color:var(--cream)}
+.chat-box{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:4px;height:420px;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;margin-bottom:1rem;scroll-behavior:smooth}
+.chat-box::-webkit-scrollbar{width:4px}.chat-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.chat-msg{max-width:80%;padding:.9rem 1.2rem;border-radius:3px;font-size:.9rem;line-height:1.6}
+.chat-msg.user{align-self:flex-end;background:rgba(46,196,169,.12);border:1px solid rgba(46,196,169,.2);color:var(--cream)}
+.chat-msg.ai{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(247,242,234,.85)}
+.chat-msg.ai .ai-label{font-size:.65rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.4rem}
+.chat-msg.ai[data-ai="claude"] .ai-label{color:var(--claude)}
+.chat-msg.ai[data-ai="gpt"] .ai-label{color:var(--gpt)}
+.typing-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:rgba(247,242,234,.4);margin:0 2px;animation:typingBounce .9s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+.chat-input-row{display:flex;gap:.75rem}
+.chat-input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);padding:1rem 1.25rem;color:var(--cream);font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s;border-radius:3px}
+.chat-input:focus{border-color:rgba(46,196,169,.4)}.chat-input::placeholder{color:rgba(247,242,234,.25)}
+.chat-send{background:var(--fresh);color:#020f0d;border:none;padding:1rem 1.5rem;font-size:.85rem;font-weight:500;cursor:pointer;letter-spacing:.05em;transition:all .3s;border-radius:3px;font-family:'Inter',sans-serif}
+.chat-send:hover{opacity:.85;transform:translateY(-1px)}.chat-send:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.key-row{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.key-input{flex:1;min-width:200px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:.7rem 1rem;color:var(--cream);font-family:'Inter',sans-serif;font-size:.8rem;outline:none;border-radius:3px}
+.key-input::placeholder{color:rgba(247,242,234,.2)}.key-input:focus{border-color:rgba(46,196,169,.3)}
+.quick-questions{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.quick-q{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:.45rem .9rem;font-size:.75rem;color:rgba(247,242,234,.5);cursor:pointer;border-radius:20px;transition:all .3s;font-family:'Inter',sans-serif}
+.quick-q:hover{border-color:rgba(46,196,169,.3);color:var(--fresh)}
+.both-btn{width:100%;background:transparent;border:1px solid rgba(46,196,169,.3);color:rgba(46,196,169,.7);padding:.7rem;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-bottom:1rem;transition:all .3s;border-radius:3px;font-family:'Inter',sans-serif}
+.both-btn:hover{background:rgba(46,196,169,.06);color:var(--fresh)}.both-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══ SECTION 7 — RESOURCES ═══════════════════════════════ */
+#resources{background:#0a0a0a;min-height:50vh}
+#resources .parallax-bg{background:radial-gradient(ellipse at 50% 100%,rgba(46,196,169,.08),transparent 60%),#0a0a0a}
+.resources-inner{text-align:center;padding:6rem 2rem;max-width:700px;margin:0 auto}
+.resources-inner h2{font-family:'Inter',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem}
+.resources-inner h2 em{color:var(--fresh);font-style:italic}
+.resources-inner>p{font-size:1rem;color:rgba(247,242,234,.4);font-weight:300;line-height:1.8;margin-bottom:3rem}
+.resource-links{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:4rem}
+.resource-link{display:inline-block;padding:.9rem 1.8rem;border:1px solid rgba(247,242,234,.15);color:rgba(247,242,234,.7);text-decoration:none;font-size:.85rem;letter-spacing:.05em;transition:all .3s}
+.resource-link:hover{border-color:var(--fresh);color:var(--fresh);transform:translateY(-2px)}
+.footer-line{border-top:1px solid rgba(255,255,255,.05);padding-top:2rem;font-size:.75rem;color:rgba(247,242,234,.2);letter-spacing:.1em}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">Breathe<span>Free</span></div>
+  <ul class="nav-links">
+    <li><a href="#damage">The Cost</a></li>
+    <li><a href="#timeline">Recovery</a></li>
+    <li><a href="#transform">Benefits</a></li>
+    <li><a href="#ai-chat">Ask AI</a></li>
+    <li><a href="#resources">Get Help</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ S1 HERO ═══════════════════════════════════════════ -->
+<section class="parallax-section" id="hero">
+  <div class="parallax-bg" data-speed="0.3"></div>
+  <canvas id="cig-canvas"></canvas>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Healthier Smoking Initiative</p>
+    <h1 class="hero-title">Every Breath<br><span class="line-fresh">Matters.</span></h1>
+    <p class="hero-sub">8 million lives are lost to tobacco every year. Yours doesn't have to be one of them. The moment you stop, your body begins to heal.</p>
+  </div>
+  <div class="scroll-indicator"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
+
+<!-- ═══ S2 DAMAGE ═════════════════════════════════════════ -->
+<section class="parallax-section" id="damage">
+  <div class="parallax-bg" data-speed="0.4"></div>
+  <canvas class="sec-canvas" id="canvas-damage"></canvas>
+  <div class="section-inner">
+    <p class="section-label reveal">The Real Cost of Smoking</p>
+    <div class="stat-grid">
+      <div class="stat-card reveal rd1"><div class="stat-num">8M+</div><div class="stat-label">Deaths caused by tobacco globally each year — more than HIV, TB &amp; malaria combined.</div></div>
+      <div class="stat-card reveal rd2"><div class="stat-num">69</div><div class="stat-label">Known carcinogens in cigarette smoke. Each puff delivers a cocktail of toxic chemicals.</div></div>
+      <div class="stat-card reveal rd3"><div class="stat-num">10yr</div><div class="stat-label">Average years cut from a smoker's life — a decade of sunsets and moments stolen.</div></div>
+      <div class="stat-card reveal rd4"><div class="stat-num">1.3B</div><div class="stat-label">People worldwide using tobacco — and every one of them can choose to stop today.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3 TIMELINE ═══════════════════════════════════════ -->
+<section class="parallax-section" id="timeline">
+  <div class="parallax-bg" data-speed="0.5"></div>
+  <canvas class="sec-canvas" id="canvas-timeline"></canvas>
+  <div class="section-inner">
+    <p class="section-label reveal">What Happens When You Quit</p>
+    <h2 class="timeline-title reveal">Your Body's <em>Remarkable</em><br>Recovery</h2>
+    <p class="timeline-subtitle reveal">Within minutes of your last cigarette, healing begins. Here's the science.</p>
+    <div class="timeline-items">
+      <div class="timeline-item"><span class="time-badge">20 minutes</span><div class="time-event">Heart Rate Drops</div><p class="time-desc">Your heart rate and blood pressure begin to fall. Circulation improves almost instantly.</p></div>
+      <div class="timeline-item"><span class="time-badge">12 hours</span><div class="time-event">Carbon Monoxide Clears</div><p class="time-desc">CO levels drop to normal. Your blood can now carry oxygen far more efficiently.</p></div>
+      <div class="timeline-item"><span class="time-badge">2 weeks – 3 months</span><div class="time-event">Lungs &amp; Circulation Improve</div><p class="time-desc">Lung function increases up to 30%. Walking feels easier. Coughing decreases.</p></div>
+      <div class="timeline-item"><span class="time-badge">1 – 9 months</span><div class="time-event">Cilia Grow Back</div><p class="time-desc">Tiny hair-like structures in your lungs regrow, clearing mucus and reducing infection.</p></div>
+      <div class="timeline-item"><span class="time-badge">1 year</span><div class="time-event">Heart Disease Risk Halved</div><p class="time-desc">Your risk of coronary heart disease is half that of a smoker. The distance grows every day.</p></div>
+      <div class="timeline-item"><span class="time-badge">10 years</span><div class="time-event">Cancer Risk Near Normal</div><p class="time-desc">Lung cancer risk falls to about half that of a smoker. Other cancers also decrease.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4 TRANSFORM ══════════════════════════════════════ -->
+<section class="parallax-section" id="transform">
+  <div class="parallax-bg" data-speed="0.35"></div>
+  <canvas class="sec-canvas" id="canvas-transform"></canvas>
+  <div class="section-inner">
+    <div class="transform-layout">
+      <div class="transform-text">
+        <h2 class="big-title reveal">Life <span>After</span> <span>Aerove</span></h2>
+        <p class="reveal rd1">Quitting isn't just about avoiding harm — it's about gaining something extraordinary. Better sleep. Richer taste. Deeper breaths. More time.</p>
+        <a href="#ai-chat" class="cta-btn reveal rd2">Ask Our AI Coach →</a>
+      </div>
+      <div class="benefit-pills">
+        <div class="pill reveal rd1"><div class="pill-icon">💰</div><div class="pill-text"><strong>Financial Freedom</strong><span>Save ₹50,000+ per year by quitting a pack-a-day habit.</span></div></div>
+        <div class="pill reveal rd2"><div class="pill-icon">🫁</div><div class="pill-text"><strong>Easier Breathing</strong><span>Lung capacity improves within weeks. Stairs become effortless.</span></div></div>
+        <div class="pill reveal rd3"><div class="pill-icon">🧠</div><div class="pill-text"><strong>Sharper Mind</strong><span>Improved circulation boosts memory, focus and cognition.</span></div></div>
+        <div class="pill reveal rd4"><div class="pill-icon">🌿</div><div class="pill-text"><strong>Better Taste &amp; Smell</strong><span>Within 48 hours, taste buds and smell receptors begin recovering.</span></div></div>
+        <div class="pill reveal rd4"><div class="pill-icon">❤️</div><div class="pill-text"><strong>Protect Your Loved Ones</strong><span>Secondhand smoke kills 1.2 million non-smokers each year.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5 QUOTE ═══════════════════════════════════════════ -->
+<section class="parallax-section" id="quote">
+  <div class="parallax-bg" data-speed="0.2"></div>
+  <canvas class="sec-canvas" id="canvas-quote"></canvas>
+  <div class="quote-inner">
+    <span class="quote-mark reveal">"</span>
+    <blockquote class="quote-text reveal rd1">It is never too late to give up smoking and experience the healing power of your own body.</blockquote>
+    <p class="quote-attr reveal rd2">— World Health Organization</p>
+  </div>
+</section>
+
+<!-- ═══ S6 AI CHAT ════════════════════════════════════════ -->
+<section class="parallax-section" id="ai-chat">
+  <div class="parallax-bg" data-speed="0.25"></div>
+  <canvas class="sec-canvas" id="canvas-chat"></canvas>
+  <div class="section-inner" style="max-width:900px">
+    <div class="chat-header reveal">
+      <h2>Your <em>Quit Coach</em></h2>
+      <p>Ask Claude or ChatGPT anything about quitting smoking — cravings, withdrawal, tips, motivation.</p>
+    </div>
+    <div class="key-row reveal rd1">
+      <input class="key-input" id="key-claude" type="password" placeholder="🟠 Anthropic API key (Claude Haiku)">
+      <input class="key-input" id="key-gpt" type="password" placeholder="🟢 OpenAI API key (GPT-4o Mini)">
+    </div>
+    <div class="ai-tabs reveal rd2">
+      <button class="ai-tab active" data-ai="claude">🟠 Claude</button>
+      <button class="ai-tab" data-ai="gpt">🟢 ChatGPT</button>
+    </div>
+    <button class="both-btn reveal rd3" id="btn-both">⚡ Ask Both AIs Simultaneously</button>
+    <div class="quick-questions reveal rd4">
+      <button class="quick-q" data-q="How do I deal with cigarette cravings?">Cravings</button>
+      <button class="quick-q" data-q="What are withdrawal symptoms when quitting?">Withdrawal</button>
+      <button class="quick-q" data-q="Give me a 7-day quit plan">7-day plan</button>
+      <button class="quick-q" data-q="What can I do instead of smoking when stressed?">Stress tips</button>
+      <button class="quick-q" data-q="How long until I feel better after quitting?">Timeline</button>
+      <button class="quick-q" data-q="Motivate me to quit smoking right now">Motivate me</button>
+    </div>
+    <div class="chat-box" id="chat-box">
+      <div class="chat-msg ai" data-ai="claude">
+        <div class="ai-label">Claude</div>
+        Hi! I'm your coach. Enter your Anthropic API key above, then ask me anything — cravings, withdrawal tips, or just need encouragement. I'm here for you. 🫁
+      </div>
+    </div>
+    <div class="chat-input-row reveal">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Ask about quitting smoking…" maxlength="500">
+      <button class="chat-send" id="chat-send">Send →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7 RESOURCES ══════════════════════════════════════ -->
+<section class="parallax-section" id="resources">
+  <div class="parallax-bg" data-speed="0.3"></div>
+  <div class="resources-inner">
+    <h2 class="reveal">Ready to <em>Breathe Free?</em></h2>
+    <p class="reveal rd1">Expert help dramatically improves your chances of quitting for good. Reach out today.</p>
+    <a href="http://localhost:3000/pagessex.html#/home" class="cta-btn reveal rd2" aria-label="Continue to questionnaire">Continue</a>
+    <div class="resource-links reveal rd3">
+      <a class="resource-link" href="https://www.who.int/campaigns/world-no-tobacco-day" target="_blank">WHO Tobacco Info</a>
+      <a class="resource-link" href="https://www.cdc.gov/tobacco/quit_smoking/" target="_blank">CDC Quit Smoking</a>
+      <a class="resource-link" href="tel:1800-11-2356">iQuit India Helpline</a>
+      <a class="resource-link" href="https://smokefree.gov" target="_blank">SmokeFree.gov</a>
+    </div>
+    <p class="footer-line reveal rd3">© 2026 BreatheFreē Awareness · Stats sourced from WHO &amp; CDC</p>
+  </div>
+</section>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
+const rand=(a,b)=>a+Math.random()*(b-a);
+
+/* ── parallax ── */
+document.querySelectorAll('.parallax-bg').forEach(bg=>{
+  const tick=()=>{ const sec=bg.parentElement,off=(window.scrollY-sec.offsetTop)*(parseFloat(bg.dataset.speed)||0.3); bg.style.transform=`translateY(${off}px)`; };
+  window.addEventListener('scroll',tick,{passive:true}); tick();
+});
+
+/* ── nav ── */
+window.addEventListener('scroll',()=>$('navbar').classList.toggle('scrolled',window.scrollY>60),{passive:true});
+
+/* ── reveal ── */
+const revObs=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting)e.target.classList.add('visible'); }),{threshold:0.12});
+document.querySelectorAll('.reveal,.timeline-item').forEach(el=>revObs.observe(el));
+
+/* ── section canvas helper ── */
+function makeSecCanvas(id){
+  const canvas=$(id); if(!canvas)return null;
+  const ctx=canvas.getContext('2d');
+  const resize=()=>{ canvas.width=canvas.parentElement.offsetWidth; canvas.height=canvas.parentElement.offsetHeight; };
+  resize(); window.addEventListener('resize',resize);
+  return { canvas, ctx,
+    progress(){ const sec=canvas.parentElement,rect=sec.getBoundingClientRect(),vh=window.innerHeight; return clamp(1-rect.bottom/(vh+rect.height),0,1); }
+  };
+}
+
+/* ══════════════════════════════════════════════════════════
+   CANVAS 1 — HERO: CIGARETTE BURN → BURST → SMOKE
+══════════════════════════════════════════════════════════ */
+(function(){
+  const canvas=$('cig-canvas'),ctx=canvas.getContext('2d');
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+  resize(); window.addEventListener('resize',resize);
+
+  class Puff{
+    constructor(x,y,burst){ this.x=x+(rand(-.5,.5))*(burst?60:10);this.y=y;this.vx=rand(-.5,.5)*(burst?5:1.2);this.vy=-(rand(0,1)*(burst?4:2)+(burst?1:.5));this.r=rand(burst?10:4,burst?30:12);this.maxR=this.r*(burst?5:6);this.alpha=burst?.7:.35;this.life=0;this.maxLife=burst?90:140;this.burst=burst;this.hue=burst?rand(10,50):0; }
+    update(){ this.life++;this.x+=this.vx;this.y+=this.vy;this.vx*=.98;this.vy*=.98;this.r=Math.min(this.r+(this.burst?1.4:.7),this.maxR);const t=this.life/this.maxLife;this.alpha=this.burst?(t<.3?.8:.8*(1-(t-.3)/.7)):.35*(1-t); }
+    draw(ctx){ const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);if(this.burst){g.addColorStop(0,`hsla(${this.hue},90%,60%,${this.alpha})`);g.addColorStop(.4,`hsla(${this.hue+15},70%,40%,${this.alpha*.6})`);g.addColorStop(1,`hsla(0,0%,10%,0)`);}else{g.addColorStop(0,`rgba(180,175,170,${this.alpha})`);g.addColorStop(.5,`rgba(140,135,130,${this.alpha*.5})`);g.addColorStop(1,`rgba(100,95,90,0)`);}ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill(); }
+    dead(){ return this.life>=this.maxLife; }
+  }
+  class Spark{
+    constructor(x,y){ const a=rand(0,Math.PI*2),s=rand(2,10);this.x=x;this.y=y;this.vx=Math.cos(a)*s;this.vy=Math.sin(a)*s;this.life=0;this.maxLife=rand(20,50)|0;this.r=rand(1,4);this.color=`hsl(${rand(10,50)|0},100%,${rand(60,90)|0}%)`; }
+    update(){ this.life++;this.x+=this.vx;this.y+=this.vy;this.vy+=.18;this.vx*=.97;this.vy*=.97; }
+    draw(ctx){ const t=1-this.life/this.maxLife;ctx.save();ctx.globalAlpha=t;ctx.beginPath();ctx.arc(this.x,this.y,this.r*t,0,Math.PI*2);ctx.fillStyle=this.color;ctx.fill();ctx.restore(); }
+    dead(){ return this.life>=this.maxLife; }
+  }
+  class AshBit{
+    constructor(x,y){ this.x=x+rand(-20,20);this.y=y;this.vx=rand(-3,3);this.vy=rand(-3,-1);this.r=rand(1,4);this.angle=rand(0,Math.PI*2);this.spin=rand(-.2,.2);this.life=0;this.maxLife=rand(40,100)|0; }
+    update(){ this.life++;this.x+=this.vx;this.y+=this.vy;this.vy+=.12;this.angle+=this.spin; }
+    draw(ctx){ const t=1-this.life/this.maxLife;ctx.save();ctx.globalAlpha=t*.9;ctx.translate(this.x,this.y);ctx.rotate(this.angle);ctx.fillStyle=`rgb(${(60+40*t)|0},${(55+35*t)|0},${(50+30*t)|0})`;ctx.fillRect(-this.r,-this.r/2,this.r*2,this.r);ctx.restore(); }
+    dead(){ return this.life>=this.maxLife; }
+  }
+
+  let puffs=[],sparks=[],ashes=[],burstDone=false;
+  const hero=$('hero');
+  function getCigGeo(){ const cx=window.innerWidth/2,cy=window.innerHeight*.78,len=Math.min(window.innerWidth*.35,260),thick=Math.max(8,len*.055),angle=-Math.PI/12,cos=Math.cos(angle),sin=Math.sin(angle),tipX=cx-cos*len/2,tipY=cy-sin*len/2; return{cx,cy,len,thick,angle,cos,sin,tipX,tipY}; }
+
+  function drawCig(progress,burstP){
+    const{len,thick,angle,cos,sin,tipX,tipY}=getCigGeo();
+    ctx.save();
+    if(burstP>0){ const sh=burstP<.5?(rand(-.5,.5)*8*burstP):0;ctx.translate(sh,sh*.5);const sc=1-burstP*.6;ctx.translate(tipX,tipY);ctx.scale(sc,sc);ctx.translate(-tipX,-tipY);ctx.globalAlpha=Math.max(0,1-burstP*1.5); }
+    const bLen=len*Math.min(progress*1.1,.85),bx=tipX+cos*bLen,by=tipY+sin*bLen;
+    ctx.save();ctx.translate(tipX,tipY);ctx.rotate(angle);
+    const ag=ctx.createLinearGradient(0,0,bLen,0);ag.addColorStop(0,'#8a8278');ag.addColorStop(.7,'#706860');ag.addColorStop(1,'#5a5048');ctx.fillStyle=ag;ctx.beginPath();ctx.roundRect(0,-thick/2,bLen+2,thick,[thick/2,0,0,thick/2]);ctx.fill();
+    const pg=ctx.createLinearGradient(bLen,0,len,0);pg.addColorStop(0,'#e8e0cc');pg.addColorStop(1,'#f0e8d0');ctx.fillStyle=pg;ctx.beginPath();ctx.roundRect(bLen,-thick/2,len-bLen,thick,[0,thick/2,thick/2,0]);ctx.fill();
+    const fl=len*.18;ctx.fillStyle='#c87040';ctx.beginPath();ctx.roundRect(len-fl,-thick/2,fl,thick,[0,thick/2,thick/2,0]);ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=.5;for(let i=1;i<6;i++){const lx=bLen+(len-bLen-fl)*i/7;ctx.beginPath();ctx.moveTo(lx,-thick/2+1);ctx.lineTo(lx,thick/2-1);ctx.stroke();}
+    ctx.restore();
+    if(progress<.98&&burstP<.5){ const ga=.5+.5*Math.sin(Date.now()*.004),eg=ctx.createRadialGradient(bx,by,0,bx,by,thick*2.5);eg.addColorStop(0,`rgba(255,200,50,${.95*(1-burstP)})`);eg.addColorStop(.3,`rgba(255,100,10,${.7*(1-burstP)})`);eg.addColorStop(.6,`rgba(200,40,0,${.3*ga*(1-burstP)})`);eg.addColorStop(1,'rgba(180,20,0,0)');ctx.beginPath();ctx.arc(bx,by,thick*2.5,0,Math.PI*2);ctx.fillStyle=eg;ctx.fill();ctx.beginPath();ctx.arc(bx,by,thick*.6,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,200,${.9+.1*Math.sin(Date.now()*.01)})`;ctx.fill(); }
+    ctx.restore();
+  }
+
+  function render(){
+    requestAnimationFrame(render);
+    const heroH=hero.offsetHeight,scrollY=window.scrollY;
+    canvas.style.opacity=scrollY>hero.offsetTop+heroH-window.innerHeight*.5?'0':'1';
+    const p=clamp(scrollY/(heroH*.75),0,1);
+    const burnP=clamp(p/.55,0,1),burstP=p<.55?0:p>.70?1:(p-.55)/.15,smokeP=p<.70?0:(p-.70)/.30;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(burstP>.05&&!burstDone){ burstDone=true;const{tipX,tipY,cos,len}=getCigGeo(),bx=tipX+cos*len*.55,by=tipY+Math.sin(-Math.PI/12)*len*.55;for(let i=0;i<30;i++)puffs.push(new Puff(bx,by,true));for(let i=0;i<60;i++)sparks.push(new Spark(bx,by));for(let i=0;i<25;i++)ashes.push(new AshBit(bx,by)); }
+    if(burstP<.05)burstDone=false;
+    if(burnP>.05&&burnP<1&&burstP<.3){ const{tipX,tipY,cos,sin,len}=getCigGeo(),bf=Math.min(burnP*1.1,.85),bx=tipX+cos*len*bf,by=tipY+sin*len*bf;if(Math.random()<.25)puffs.push(new Puff(bx,by,false)); }
+    if(smokeP>0&&smokeP<1){ const{tipX,tipY,cos,sin,len}=getCigGeo(),bx=tipX+cos*len*.85,by=tipY+sin*len*.85-smokeP*30;if(Math.random()<Math.max(0,.6-smokeP*.7))puffs.push(new Puff(bx,by,false)); }
+    puffs=puffs.filter(p=>!p.dead());puffs.forEach(p=>{p.update();p.draw(ctx);});
+    if(burstP<1)drawCig(burnP,burstP);
+    sparks=sparks.filter(s=>!s.dead());sparks.forEach(s=>{s.update();s.draw(ctx);});
+    ashes=ashes.filter(a=>!a.dead());ashes.forEach(a=>{a.update();a.draw(ctx);});
+    if(smokeP>.7){ ctx.fillStyle=`rgba(10,10,10,${(smokeP-.7)/.3*.6})`;ctx.fillRect(0,0,canvas.width,canvas.height); }
+  }
+  render();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   CANVAS 2 — DAMAGE: toxic embers / hot ash raining upward
+══════════════════════════════════════════════════════════ */
+(function(){
+  const sc=makeSecCanvas('canvas-damage');if(!sc)return;
+  const{canvas,ctx}=sc;
+  const pts=Array.from({length:100},()=>({ x:rand(0,1),y:rand(.1,1.2),vx:rand(-.0008,.0008),vy:-(rand(.0003,.0012)),r:rand(1,4),alpha:rand(.1,.5),hue:rand(10,40)|0,life:rand(0,1) }));
+  function loop(){
+    requestAnimationFrame(loop);
+    const p=sc.progress(),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H); if(p<=0)return;
+    pts.forEach(pt=>{
+      pt.life+=.004;pt.x+=pt.vx;pt.y+=pt.vy;
+      if(pt.life>1){pt.life=0;pt.y=1.1;pt.x=rand(0,1);}
+      const f=pt.life<.2?pt.life/.2:pt.life>.8?(1-pt.life)/.2:1;
+      ctx.save();ctx.globalAlpha=pt.alpha*f*Math.min(p*3,1);
+      ctx.beginPath();ctx.arc(pt.x*W,pt.y*H,pt.r,0,Math.PI*2);
+      ctx.fillStyle=`hsl(${pt.hue},90%,65%)`;ctx.fill();
+      ctx.strokeStyle=`hsl(${pt.hue},90%,55%)`;ctx.lineWidth=.5;ctx.globalAlpha*=.3;
+      ctx.beginPath();ctx.moveTo(pt.x*W,pt.y*H);ctx.lineTo(pt.x*W-pt.vx*W*60,pt.y*H-pt.vy*H*60);ctx.stroke();
+      ctx.restore();
+    });
+    const vg=ctx.createRadialGradient(W/2,H/2,H*.2,W/2,H/2,H*.9);
+    vg.addColorStop(0,'rgba(26,10,0,0)');vg.addColorStop(1,`rgba(26,10,0,${.45*Math.min(p*2,1)})`);
+    ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  }
+  loop();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   CANVAS 3 — TIMELINE: healing light orbs rising like breath
+══════════════════════════════════════════════════════════ */
+(function(){
+  const sc=makeSecCanvas('canvas-timeline');if(!sc)return;
+  const{canvas,ctx}=sc;
+  const orbs=Array.from({length:35},()=>({ x:rand(0,1),y:rand(.2,1.1),speed:rand(.0003,.0012),r:rand(4,22),alpha:rand(.04,.22),phase:rand(0,Math.PI*2),wobble:rand(-.0003,.0003) }));
+  function loop(){
+    requestAnimationFrame(loop);
+    const p=sc.progress(),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H); if(p<=0)return;
+    orbs.forEach(o=>{
+      o.y-=o.speed;o.phase+=.012;o.x+=Math.sin(o.phase)*o.wobble;
+      if(o.y<-.1){o.y=1.05;o.x=rand(0,1);}
+      const f=o.y>.85?Math.max(0,(1-o.y)/.15):o.y<.05?o.y/.05:1;
+      ctx.save();ctx.globalAlpha=o.alpha*f*Math.min(p*2.5,1);
+      const g=ctx.createRadialGradient(o.x*W,o.y*H,0,o.x*W,o.y*H,o.r*2.5);
+      g.addColorStop(0,'rgba(46,196,169,1)');g.addColorStop(.4,'rgba(46,196,169,.3)');g.addColorStop(1,'rgba(46,196,169,0)');
+      ctx.beginPath();ctx.arc(o.x*W,o.y*H,o.r*2.5,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+      ctx.restore();
+    });
+    const mist=ctx.createLinearGradient(0,H*.6,0,H);
+    mist.addColorStop(0,'rgba(46,196,169,0)');mist.addColorStop(1,`rgba(46,196,169,${.05*Math.min(p*3,1)})`);
+    ctx.fillStyle=mist;ctx.fillRect(0,0,W,H);
+  }
+  loop();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   CANVAS 4 — TRANSFORM: breath wave ribbons
+══════════════════════════════════════════════════════════ */
+(function(){
+  const sc=makeSecCanvas('canvas-transform');if(!sc)return;
+  const{canvas,ctx}=sc;
+  let t=0;
+  function loop(){
+    requestAnimationFrame(loop);
+    const p=sc.progress(),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H); if(p<=0){t=0;return;}
+    t+=.006;
+    for(let i=0;i<10;i++){
+      const phase=i*Math.PI/5,amp=(15+i*14)*Math.min(p*3,1);
+      ctx.save();
+      ctx.globalAlpha=Math.min(p*2,.16)*(1-i*.07);
+      ctx.strokeStyle=`hsl(${165+i*5},55%,${58+i*2}%)`;
+      ctx.lineWidth=1.2+i*.25;
+      ctx.beginPath();
+      for(let x=0;x<=W;x+=3){
+        const y=H*.5+Math.sin(x/W*Math.PI*4+t+phase)*amp+Math.sin(x/W*Math.PI*6+t*.8+phase)*(amp*.35);
+        x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();ctx.restore();
+    }
+  }
+  loop();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   CANVAS 5 — QUOTE: dark petal / leaf confetti on teal
+══════════════════════════════════════════════════════════ */
+(function(){
+  const sc=makeSecCanvas('canvas-quote');if(!sc)return;
+  const{canvas,ctx}=sc;
+  const leaves=Array.from({length:30},()=>({ x:rand(0,1),y:rand(0,1),vx:rand(-.0005,.0005),vy:-(rand(.0002,.0006)),size:rand(5,16),angle:rand(0,Math.PI*2),spin:rand(-.015,.015),alpha:rand(.07,.25),phase:rand(0,Math.PI*2) }));
+  function loop(){
+    requestAnimationFrame(loop);
+    const p=sc.progress(),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H); if(p<=0)return;
+    leaves.forEach(l=>{
+      l.y+=l.vy;l.x+=l.vx+Math.sin(l.phase)*.0003;l.angle+=l.spin;l.phase+=.008;
+      if(l.y<-.05){l.y=1.05;l.x=rand(0,1);}
+      ctx.save();ctx.globalAlpha=l.alpha*Math.min(p*3,1);
+      ctx.translate(l.x*W,l.y*H);ctx.rotate(l.angle);
+      ctx.fillStyle='rgba(2,60,50,.65)';
+      ctx.beginPath();ctx.ellipse(0,0,l.size,l.size*.4,0,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    });
+  }
+  loop();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   CANVAS 6 — AI CHAT: neural constellation
+══════════════════════════════════════════════════════════ */
+(function(){
+  const sc=makeSecCanvas('canvas-chat');if(!sc)return;
+  const{canvas,ctx}=sc;
+  const nodes=Array.from({length:55},()=>({ x:rand(0,1),y:rand(0,1),vx:rand(-.0003,.0003),vy:rand(-.0003,.0003),r:rand(1,3),alpha:rand(.15,.5) }));
+  function loop(){
+    requestAnimationFrame(loop);
+    const p=sc.progress(),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H); if(p<=0)return;
+    const vis=Math.min(p*4,1);
+    nodes.forEach(n=>{ n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>1)n.vx*=-1;if(n.y<0||n.y>1)n.vy*=-1;ctx.save();ctx.globalAlpha=n.alpha*vis;ctx.beginPath();ctx.arc(n.x*W,n.y*H,n.r,0,Math.PI*2);ctx.fillStyle='rgba(46,196,169,1)';ctx.fill();ctx.restore(); });
+    ctx.save();
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=(nodes[i].x-nodes[j].x)*W,dy=(nodes[i].y-nodes[j].y)*H,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<W*.11){ ctx.globalAlpha=.1*(1-dist/(W*.11))*vis;ctx.strokeStyle='rgba(46,196,169,1)';ctx.lineWidth=.4;ctx.beginPath();ctx.moveTo(nodes[i].x*W,nodes[i].y*H);ctx.lineTo(nodes[j].x*W,nodes[j].y*H);ctx.stroke(); }
+      }
+    }
+    ctx.restore();
+  }
+  loop();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   AI CHAT ENGINE
+══════════════════════════════════════════════════════════ */
+(function(){
+  const chatBox=$('chat-box'),chatInput=$('chat-input'),sendBtn=$('chat-send'),keysClaude=$('key-claude'),keysGPT=$('key-gpt'),btnBoth=$('btn-both');
+  let activeAI='claude';
+
+  document.querySelectorAll('.ai-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{ document.querySelectorAll('.ai-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); activeAI=tab.dataset.ai; });
+  });
+
+  document.querySelectorAll('.quick-q').forEach(btn=>{
+    btn.addEventListener('click',()=>{ chatInput.value=btn.dataset.q; chatInput.focus(); });
+  });
+
+  function addMsg(text,role,ai){
+    const div=document.createElement('div');
+    div.className=`chat-msg ${role}`;
+    if(role==='ai'){
+      div.dataset.ai=ai;
+      div.innerHTML=`<div class="ai-label">${ai==='claude'?'Claude':'ChatGPT'}</div>${text}`;
+    } else { div.textContent=text; }
+    chatBox.appendChild(div); chatBox.scrollTop=chatBox.scrollHeight; return div;
+  }
+
+  function addTyping(ai){
+    const div=document.createElement('div');
+    div.className='chat-msg ai';div.dataset.ai=ai;
+    div.innerHTML=`<div class="ai-label">${ai==='claude'?'Claude':'ChatGPT'}</div><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>`;
+    chatBox.appendChild(div);chatBox.scrollTop=chatBox.scrollHeight;return div;
+  }
+
+  const SYS=`You are a compassionate, knowledgeable smoking coach. Provide evidence-based advice about smoking, managing cravings, withdrawal symptoms, and motivation. Keep responses to 2-4 sentences, warm and encouraging. Never shame the user. Always end with a practical tip or encouraging note.`;
+
+  async function askClaude(q,key){
+    if(!key)return '⚠️ Please enter your Anthropic API key above to use Claude.';
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:SYS,messages:[{role:'user',content:q}]})});
+      if(!r.ok){const e=await r.json().catch(()=>({}));return `⚠️ Claude error: ${e.error?.message||r.statusText}`;}
+      const d=await r.json();return d.content?.[0]?.text||'No response.';
+    }catch(e){return `⚠️ Network error: ${e.message}`;}
+  }
+
+  async function askGPT(q,key){
+    if(!key)return '⚠️ Please enter your OpenAI API key above to use ChatGPT.';
+    try{
+      const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:300,messages:[{role:'system',content:SYS},{role:'user',content:q}]})});
+      if(!r.ok){const e=await r.json().catch(()=>({}));return `⚠️ ChatGPT error: ${e.error?.message||r.statusText}`;}
+      const d=await r.json();return d.choices?.[0]?.message?.content||'No response.';
+    }catch(e){return `⚠️ Network error: ${e.message}`;}
+  }
+
+  async function send(both=false){
+    const q=chatInput.value.trim();if(!q)return;
+    chatInput.value='';sendBtn.disabled=true;btnBoth.disabled=true;
+    addMsg(q,'user',null);
+    if(both){
+      const tc=addTyping('claude'),tg=addTyping('gpt');
+      const[rc,rg]=await Promise.all([askClaude(q,keysClaude.value.trim()),askGPT(q,keysGPT.value.trim())]);
+      tc.innerHTML=`<div class="ai-label">Claude</div>${rc}`;
+      tg.innerHTML=`<div class="ai-label">ChatGPT</div>${rg}`;
+    } else {
+      const t=addTyping(activeAI);
+      const ans=activeAI==='claude'?await askClaude(q,keysClaude.value.trim()):await askGPT(q,keysGPT.value.trim());
+      t.innerHTML=`<div class="ai-label">${activeAI==='claude'?'Claude':'ChatGPT'}</div>${ans}`;
+    }
+    chatBox.scrollTop=chatBox.scrollHeight;
+    sendBtn.disabled=false;btnBoth.disabled=false;
+  }
+
+  sendBtn.addEventListener('click',()=>send(false));
+  btnBoth.addEventListener('click',()=>send(true));
+  chatInput.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(false);} });
+})();
+</script>
+</body>
+</html>

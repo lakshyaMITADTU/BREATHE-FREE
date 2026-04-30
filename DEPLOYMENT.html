@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEROVE - Complete Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --ember: #e85c1a;
+            --fresh: #2ec4a9;
+            --cream: #f7f2ea;
+            --dark: #0a0a0a;
+            --gpt: #10a37f;
+            --claude: #c9813a;
+        }
+        
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+        
+        /* Tab Navigation */
+        .tab-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.8));
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 0;
+        }
+        
+        .tab-container {
+            display: flex;
+            gap: 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(46,196,169,0.3) transparent;
+        }
+        
+        .tab-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .tab-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .tab-container::-webkit-scrollbar-thumb {
+            background: rgba(46,196,169,0.3);
+            border-radius: 2px;
+        }
+        
+        .tab-btn {
+            padding: 16px 24px;
+            background: transparent;
+            border: none;
+            color: rgba(247,242,234,0.5);
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .tab-btn:hover {
+            color: var(--fresh);
+            background: rgba(46,196,169,0.05);
+        }
+        
+        .tab-btn.active {
+            color: var(--fresh);
+            border-bottom-color: var(--fresh);
+            background: rgba(46,196,169,0.08);
+        }
+        
+        /* Tab Sections */
+        .page-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            min-height: 100vh;
+        }
+        
+        .page-section.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        /* Hero Section */
+        .parallax-section {
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .parallax-bg {
+            position: absolute;
+            inset: -20%;
+            width: 140%;
+            height: 140%;
+            will-change: transform;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* Navigation for BreatheFreee content */
+        nav {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+            transition: all 0.4s;
+        }
+        
+        nav.scrolled {
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .nav-logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        
+        .nav-logo span { color: var(--fresh); }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(247,242,234,0.5);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: var(--fresh); }
+        
+        @media(max-width: 640px) {
+            .nav-links { display: none; }
+            .tab-btn { padding: 12px 16px; font-size: 0.75rem; }
+        }
+        
+        /* Smooth scrolling indicator */
+        .page-section.active #navbar {
+            display: flex;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 900px;
+        }
+        
+        .hero-title {
+            font-size: clamp(4rem, 10vw, 9rem);
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ember);
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-sub {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(247,242,234,0.6);
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+        
+        /* Scroll padding */
+        html.page-section:not(.active) {
+            scroll-padding-top: 0;
+        }
+        
+        .page-section.active {
+            scroll-padding-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <div class="tab-container">
+            <button class="tab-btn active" data-tab="breathefree">🫁 BreatheFree</button>
+            <button class="tab-btn" data-tab="auth-split">🔐 Sign Up</button>
+            <button class="tab-btn" data-tab="login">🔑 Join Karro</button>
+        </div>
+    </nav>
+
+    <!-- ================================
+         PAGE 1: BREATHEFREE (join.html)
+         ================================ -->
+    <div id="breathefree" class="page-section active">
+        <!-- Navigation for this page -->
+        <nav id="navbar">
+            <div class="nav-logo">Breathe<span>Free</span></div>
+            <ul class="nav-links">
+                <li><a href="#damage">The Cost</a></li>
+                <li><a href="#timeline">Recovery</a></li>
+                <li><a href="#transform">Benefits</a></li>
+                <li><a href="#ai-chat">Ask AI</a></li>
+                <li><a href="#resources">Get Help</a></li>
+            </ul>
+        </nav>
+
+        <!-- HERO Section -->
+        <section class="parallax-section" id="hero">
+            <div class="parallax-bg" data-speed="0.3" style="background: radial-gradient(ellipse at 50% 60%, #2a0a00, #0a0a0a 70%);"></div>
+            <div class="hero-content">
+                <p class="hero-eyebrow">Healthier Smoking Initiative</p>
+                <h1 class="hero-title">Every Breath<br><span style="color: var(--fresh); font-style: italic;">Matters.</span></h1>
+                <p class="hero-sub">8 million lives are lost to tobacco every year. Yours doesn't have to be one of them. The moment you stop, your body begins to heal.</p>
+            </div>
+        </section>
+
+        <!-- DAMAGE Section -->
+        <section class="parallax-section" id="damage" style="background: #1a0a00; min-height: 150vh;">
+            <div class="parallax-bg" data-speed="0.4" style="background: radial-gradient(ellipse at 20% 50%, rgba(180,60,0,0.3), transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(80,20,0,0.2), transparent 60%), #1a0a00;"></div>
+            <div style="position: relative; z-index: 10; width: 100%; max-width: 1200px; padding: 6rem 2rem; margin: 0 auto;">
+                <p style="font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase; color: var(--ember); margin-bottom: 4rem; font-weight: 500;">The Real Cost of Smoking</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="background: rgba(10,5,0,0.8); padding: 3rem 2.5rem; position: relative; overflow: hidden; transition: background 0.3s;">
+                        <div style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; color: var(--ember); line-height: 1; margin-bottom: 0.5rem;">8M+</div>
+                        <div style="font-size: 0.85rem; color: rgba(247,242,234,0.5); line-height: 1.6;">Deaths caused by tobacco globally each year — more than HIV, TB & malaria combined.</div>
+                    </div>
+                    <div style="background: rgba(10,5,0,0.8); padding: 3rem 2.5rem; position: relative; overflow: hidden; transition: background 0.3s;">
+                        <div style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; color: var(--ember); line-height: 1; margin-bottom: 0.5rem;">69</div>
+                        <div style="font-size: 0.85rem; color: rgba(247,242,234,0.5); line-height: 1.6;">Known carcinogens in cigarette smoke.</div>
+                    </div>
+                    <div style="background: rgba(10,5,0,0.8); padding: 3rem 2.5rem; position: relative; overflow: hidden; transition: background 0.3s;">
+                        <div style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; color: var(--ember); line-height: 1; margin-bottom: 0.5rem;">10yr</div>
+                        <div style="font-size: 0.85rem; color: rgba(247,242,234,0.5); line-height: 1.6;">Average years cut from a smoker's life.</div>
+                    </div>
+                    <div style="background: rgba(10,5,0,0.8); padding: 3rem 2.5rem; position: relative; overflow: hidden; transition: background 0.3s;">
+                        <div style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; color: var(--ember); line-height: 1; margin-bottom: 0.5rem;">1.3B</div>
+                        <div style="font-size: 0.85rem; color: rgba(247,242,234,0.5); line-height: 1.6;">People worldwide using tobacco.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIMELINE Section -->
+        <section class="parallax-section" id="timeline" style="background: #080c10; min-height: 150vh;">
+            <div class="parallax-bg" data-speed="0.5" style="background: radial-gradient(ellipse at 50% 0%, rgba(46,196,169,0.1), transparent 60%), #080c10;"></div>
+            <div style="position: relative; z-index: 10; width: 100%; max-width: 1200px; padding: 6rem 2rem; margin: 0 auto;">
+                <p style="font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase; color: var(--ember); margin-bottom: 4rem; font-weight: 500;">What Happens When You Quit</p>
+                <h2 style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.1; margin-bottom: 1rem;">Your Body's <em style="color: var(--fresh); font-style: italic;">Remarkable</em> Recovery</h2>
+                <p style="font-size: 1rem; color: rgba(247,242,234,0.5); margin-bottom: 5rem; font-weight: 300; max-width: 500px;">Within minutes of your last cigarette, healing begins. Here's the science.</p>
+                <div style="position: relative; padding-left: 2rem; border-left: 1px solid var(--fresh);">
+                    <div style="padding-bottom: 3.5rem; padding-left: 2.5rem;">
+                        <span style="display: inline-block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fresh); background: rgba(46,196,169,0.1); border: 1px solid rgba(46,196,169,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 0.75rem;">20 minutes</span>
+                        <div style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem;">Heart Rate Drops</div>
+                        <p style="font-size: 0.9rem; color: rgba(247,242,234,0.5); font-weight: 300; line-height: 1.7; max-width: 420px;">Your heart rate and blood pressure begin to fall.</p>
+                    </div>
+                    <div style="padding-bottom: 3.5rem; padding-left: 2.5rem;">
+                        <span style="display: inline-block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fresh); background: rgba(46,196,169,0.1); border: 1px solid rgba(46,196,169,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 0.75rem;">1 year</span>
+                        <div style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem;">Heart Disease Risk Halved</div>
+                        <p style="font-size: 0.9rem; color: rgba(247,242,234,0.5); font-weight: 300; line-height: 1.7; max-width: 420px;">Your risk of coronary heart disease is half.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRANSFORM Section -->
+        <section class="parallax-section" id="transform" style="background: #020f0d; min-height: 150vh;">
+            <div class="parallax-bg" data-speed="0.35" style="background: radial-gradient(ellipse at 30% 60%, rgba(46,196,169,0.2), transparent 60%), #020f0d;"></div>
+            <div style="position: relative; z-index: 10; width: 100%; max-width: 1200px; padding: 6rem 2rem; margin: 0 auto;">
+                <h2 style="font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 2rem;">Life <span style="color: var(--fresh); font-style: italic; display: block;">After Aerove</span></h2>
+                <p style="font-size: 1rem; line-height: 1.8; color: rgba(247,242,234,0.55); font-weight: 300; margin-bottom: 2.5rem; max-width: 400px;">Quitting isn't just about avoiding harm — it's about gaining something extraordinary.</p>
+            </div>
+        </section>
+
+        <!-- QUOTE Section -->
+        <section class="parallax-section" id="quote" style="background: var(--fresh); min-height: 60vh;">
+            <div class="parallax-bg" data-speed="0.2" style="background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(0,0,0,0.03) 40px, rgba(0,0,0,0.03) 41px), var(--fresh);"></div>
+            <div style="text-align: center; max-width: 800px; padding: 6rem 2rem; position: relative; z-index: 10;">
+                <blockquote style="font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; color: #020f0d; line-height: 1.3; margin-bottom: 2rem; font-style: italic;">It is never too late to give up smoking and experience the healing power of your own body.</blockquote>
+                <p style="font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(2,15,13,0.5);">— World Health Organization</p>
+            </div>
+        </section>
+
+        <!-- RESOURCES Section -->
+        <section class="parallax-section" id="resources" style="background: #0a0a0a; min-height: 50vh;">
+            <div class="parallax-bg" data-speed="0.3" style="background: radial-gradient(ellipse at 50% 100%, rgba(46,196,169,0.08), transparent 60%), #0a0a0a;"></div>
+            <div style="text-align: center; padding: 6rem 2rem; max-width: 700px; margin: 0 auto; position: relative; z-index: 10;">
+                <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;">Ready to <span style="color: var(--fresh); font-style: italic;">Breathe Free?</span></h2>
+                <p style="font-size: 1rem; color: rgba(247,242,234,0.4); font-weight: 300; line-height: 1.8; margin-bottom: 3rem;">Expert help dramatically improves your chances of quitting for good.</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 4rem;">
+                    <a style="display: inline-block; padding: 0.9rem 1.8rem; border: 1px solid rgba(247,242,234,0.15); color: rgba(247,242,234,0.7); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.05em; transition: all 0.3s;" href="https://www.who.int" target="_blank">WHO Info</a>
+                    <a style="display: inline-block; padding: 0.9rem 1.8rem; border: 1px solid rgba(247,242,234,0.15); color: rgba(247,242,234,0.7); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.05em; transition: all 0.3s;" href="https://www.cdc.gov/tobacco/" target="_blank">CDC Resources</a>
+                </div>
+                <p style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; font-size: 0.75rem; color: rgba(247,242,234,0.2); letter-spacing: 0.1em;">© 2026 BreatheFree — Awareness Initiative</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- ================================
+         PAGE 2: SPLIT-SCREEN AUTH
+         ================================ -->
+    <div id="auth-split" class="page-section">
+        <div class="w-full h-screen flex flex-col md:flex-row relative overflow-hidden" style="margin-top: 60px;">
+            <!-- GLOBAL NOISE -->
+            <div class="pointer-events-none fixed inset-0 z-50 opacity-[0.035] mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%270 0 200 200%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cfilter id=%27noiseFilter%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.8%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noiseFilter)%27/%3E%3C/svg%3E');"></div>
+
+            <!-- GLOBAL VIGNETTE -->
+            <div class="pointer-events-none fixed inset-0 z-40 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.4)_100%)]"></div>
+
+            <!-- LEFT PANEL -->
+            <div class="relative w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#115a45] via-[#0f3d2e] to-[#041a13] flex flex-col justify-center p-8 lg:p-16 overflow-hidden">
+                <div class="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-teal-400/10 blur-[120px] mix-blend-screen pointer-events-none"></div>
+                <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#0b7a6e]/20 blur-[140px] mix-blend-screen pointer-events-none"></div>
+
+                <div id="left-content" class="relative z-10 max-w-xl mx-auto w-full">
+                    <h1 class="text-4xl lg:text-6xl font-extrabold mb-4 tracking-tight leading-tight drop-shadow-xl" style="color: white;">Get Started with Us</h1>
+                    <p class="text-teal-50/80 text-lg mb-12 max-w-md font-medium">Complete these easy steps to register your account.</p>
+
+                    <div class="flex flex-col gap-3 w-full">
+                        <div class="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 bg-white shadow-[0_0_30px_rgba(255,255,255,0.05)] text-black">
+                            <div class="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-extrabold shrink-0 bg-black text-white">1</div>
+                            <span class="text-sm font-semibold tracking-wide text-black">Sign up your account</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 bg-white/5 border border-white/[0.04] hover:bg-white/10 text-white">
+                            <div class="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-extrabold shrink-0 bg-white/10 text-white/50">2</div>
+                            <span class="text-sm font-semibold tracking-wide text-gray-300">Set up your workspace</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 bg-white/5 border border-white/[0.04] hover:bg-white/10 text-white">
+                            <div class="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-extrabold shrink-0 bg-white/10 text-white/50">3</div>
+                            <span class="text-sm font-semibold tracking-wide text-gray-300">Set up your profile</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="w-full md:w-1/2 flex flex-col items-center pt-24 lg:pt-32 px-6 sm:px-8 lg:px-16 pb-16 relative bg-[#050505] overflow-hidden">
+                <div class="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-white/5 blur-[120px] pointer-events-none"></div>
+
+                <div id="rightContent" class="w-full max-w-lg lg:max-w-xl relative z-10">
+                    <h2 class="text-5xl lg:text-6xl font-extrabold mb-6 tracking-tight text-white drop-shadow-md leading-tight">Sign Up Account</h2>
+                    <p class="text-gray-400/80 text-lg lg:text-xl mb-12 font-medium tracking-wide">Enter your personal data to create your account</p>
+
+                    <form class="space-y-4">
+                        <div class="flex gap-5">
+                            <input type="text" placeholder="First Name" class="flex-1 bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-4 text-base focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/50 text-white placeholder-gray-500">
+                            <input type="text" placeholder="Last Name" class="flex-1 bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-4 text-base focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/50 text-white placeholder-gray-500">
+                        </div>
+
+                        <input type="email" placeholder="Email" class="w-full bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-4 text-base focus:outline-none focus:border-teal-400 text-white placeholder-gray-500 mt-6">
+
+                        <div class="relative mt-6">
+                            <input type="password" placeholder="Password" class="w-full bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-4 text-base focus:outline-none focus:border-teal-400 text-white placeholder-gray-500 pr-12">
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-400 hover:to-teal-300 text-black font-bold py-5 text-lg rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all duration-300 mt-10">
+                            Sign Up
+                        </button>
+                    </form>
+
+                    <p class="text-center text-base text-gray-400/80 mt-10 font-medium">
+                        Already have an account? 
+                        <button class="text-teal-400 hover:text-teal-300 font-bold transition-all duration-300">Log in</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================
+         PAGE 3: LOGIN KARRO
+         ================================ -->
+    <div id="login" class="page-section">
+        <div class="w-full h-screen flex flex-col md:flex-row relative overflow-hidden" style="margin-top: 60px;">
+            <!-- LEFT PANEL -->
+            <div class="relative w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#115a45] via-[#0f3d2e] to-[#041a13] flex flex-col justify-center p-8 lg:p-16 overflow-hidden">
+                <div class="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-teal-400/10 blur-[120px] mix-blend-screen pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-xl mx-auto w-full text-center">
+                    <h1 class="text-4xl lg:text-6xl font-extrabold mb-4 tracking-tight leading-tight drop-shadow-xl text-white">Join AeroVe</h1>
+                    <p class="text-teal-50/80 text-lg mb-8 max-w-md font-medium mx-auto">Welcome to the smoking cessation platform trusted by thousands.</p>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="w-full md:w-1/2 flex flex-col items-center justify-center px-6 sm:px-8 lg:px-16 pb-16 relative bg-[#050505]">
+                <div class="w-full max-w-lg lg:max-w-xl relative z-10">
+                    <h2 class="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight text-white drop-shadow-md">Welcome Back</h2>
+                    <p class="text-gray-400/80 text-lg mb-8 font-medium">Sign in to your account to continue</p>
+
+                    <form class="space-y-4">
+                        <input type="email" placeholder="Email Address" class="w-full bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-4 text-base focus:outline-none focus:border-teal-400 text-white placeholder-gray-500">
+
+                        <input type="password" placeholder="Password" class="w-full bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-4 text-base focus:outline-none focus:border-teal-400 text-white placeholder-gray-500">
+
+                        <div class="flex items-center justify-between mb-6">
+                            <label class="flex items-center text-gray-400 text-sm">
+                                <input type="checkbox" class="mr-2">
+                                Remember me
+                            </label>
+                            <a href="#" class="text-teal-400 hover:text-teal-300 text-sm font-medium">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-400 hover:to-teal-300 text-black font-bold py-5 text-lg rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all duration-300">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <p class="text-center text-base text-gray-400/80 mt-8 font-medium">
+                        Don't have an account? 
+                        <button class="text-teal-400 hover:text-teal-300 font-bold transition-all" onclick="switchTab('auth-split')">Sign up here</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const pageSections = document.querySelectorAll('.page-section');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                switchTab(tabName);
+            });
+        });
+
+        function switchTab(tabName) {
+            // Remove active class from all buttons and sections
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            pageSections.forEach(section => section.classList.remove('active'));
+
+            // Add active class to clicked button and corresponding section
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            // Reset scroll position
+            window.scrollTo(0, 0);
+        }
+
+        // Parallax effect for scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.tab-nav');
+            if (window.scrollY > 60) {
+                navbar.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.98), rgba(0,0,0,0.9))';
+            } else {
+                navbar.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.8))';
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && document.querySelector(href)) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

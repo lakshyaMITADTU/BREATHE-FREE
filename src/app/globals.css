@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --color-brand-teal: #41c3a8;
+  --color-brand-darkTeal: #2b967f;
+  --color-brand-darkest: #0a100d;
+  --color-brand-dark: #111b15;
+  --color-brand-card: rgba(20, 35, 25, 0.4);
+  --color-brand-border: rgba(65, 195, 168, 0.2);
+  --color-brand-text: #e2e8f0;
+  --color-brand-textMuted: #94a3b8;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.text {
+  position: fixed;
+  left: 5%;
+  top: 40%;
+  color: white;
+  font-size: 2.5rem;
+  max-width: 500px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+.join-section {
+  min-height: 100vh;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.join-inner {
+  text-align: center;
+  max-width: 600px;
+}
+
+.join-inner h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.join-inner p {
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 2rem;
+}
+
+.join-btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  border: 1.5px solid rgba(34, 197, 94, 0.5);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 8px 32px rgba(34, 197, 94, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.join-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  border-radius: 12px;
+}
+
+.join-btn:hover {
+  background: rgba(34, 197, 94, 0.35);
+  border-color: rgba(34, 197, 94, 0.8);
+  box-shadow: 
+    0 12px 48px rgba(34, 197, 94, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  color: #4ade80;
+}
+
+.join-btn:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 6px 20px rgba(34, 197, 94, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+}

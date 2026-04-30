@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEROVE Parallax - Break Free</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- GSAP & Lenis for smooth scrolling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.1.10/dist/lenis.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== Header Styles ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(65, 195, 168, 0.1);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #41c3a8;
+            letter-spacing: 0.1em;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: #41c3a8;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #41c3a8;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #000000 0%, #0a100d 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 4rem;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(65, 195, 168, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #41c3a8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, rgba(65, 195, 168, 0.2) 0%, rgba(65, 195, 168, 0.1) 100%);
+            color: #41c3a8;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            border: 1.5px solid rgba(65, 195, 168, 0.4);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 8px 32px rgba(65, 195, 168, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            pointer-events: none;
+            border-radius: 12px;
+        }
+
+        .cta-button:hover {
+            background: linear-gradient(135deg, rgba(65, 195, 168, 0.35) 0%, rgba(65, 195, 168, 0.2) 100%);
+            border-color: rgba(65, 195, 168, 0.8);
+            box-shadow: 
+                0 12px 48px rgba(65, 195, 168, 0.25),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            color: #5dd9b5;
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 6px 20px rgba(65, 195, 168, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== Section Styles ===== */
+        .section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+            overflow: hidden;
+        }
+
+        .section-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ===== Section One Styles ===== */
+        #section-one {
+            background: #000000;
+            position: relative;
+        }
+
+        .section-one-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .section-one-text {
+            position: absolute;
+            left: 10%;
+            top: 30%;
+            z-index: 15;
+            max-width: 500px;
+            opacity: 0;
+        }
+
+        .section-one-text h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .section-one-text p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* ===== Section Two Styles ===== */
+        #section-two {
+            background: #000000;
+            position: relative;
+        }
+
+        .section-two-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .section-two-split-text {
+            position: absolute;
+            z-index: 15;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            padding: 0 5%;
+            opacity: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .split-text-item {
+            flex: 1;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .split-text-item p {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 600;
+            color: white;
+            line-height: 1.4;
+        }
+
+        .section-two-post-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            text-align: center;
+            opacity: 0;
+            max-width: 90%;
+            width: 600px;
+        }
+
+        .section-two-post-text h3 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .section-two-post-text p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* ===== Section Three Styles ===== */
+        #section-three {
+            background: linear-gradient(135deg, #000000 0%, #0a100d 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-three-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(65, 195, 168, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .green-tint {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(34, 197, 94, 0.08) 50%, transparent 100%);
+            opacity: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .section-three-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+            text-align: center;
+            opacity: 0;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .craving-text {
+            top: 15%;
+        }
+
+        .hurting-text {
+            top: 25%;
+        }
+
+        .hurting-text h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .hurting-text p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .stop-text {
+            top: 55%;
+        }
+
+        .stop-text h2 {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .stop-text p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .craving-text p {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: white;
+            letter-spacing: 0.02em;
+        }
+
+        /* ===== Footer Section ===== */
+        .footer-section {
+            min-height: 100vh;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 50;
+        }
+
+        .footer-content {
+            text-align: center;
+            max-width: 700px;
+        }
+
+        .footer-content h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #41c3a8 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-content p {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: #41c3a8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #5dd9b5;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(65, 195, 168, 0.1);
+            padding-top: 2rem;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 1.5rem;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            nav a {
+                font-size: 0.8rem;
+            }
+
+            .section-two-split-text {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .split-text-item {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="logo">AEROVE</div>
+        <nav>
+            <a href="#home">HOME</a>
+            <a href="#section-one">JOURNEY</a>
+            <a href="#section-three">CHANGE</a>
+            <a href="#footer">CONTACT</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <h1>Break Free</h1>
+            <p>Take control of your life. Stop the cycle. Start breathing free again.</p>
+            <button class="cta-button" onclick="document.getElementById('section-one').scrollIntoView({ behavior: 'smooth' })">
+                EXPLORE NOW
+            </button>
+        </div>
+    </section>
+
+    <!-- Section One - Canvas & Animation -->
+    <section class="section" id="section-one">
+        <div class="canvas-container">
+            <canvas id="canvas-one"></canvas>
+        </div>
+        <div class="section-one-overlay"></div>
+        <div class="section-one-text">
+            <h2>THE FIRST BREATH</h2>
+            <p>Discover the moment everything changes. When you decide to take control and reclaim your life.</p>
+        </div>
+    </section>
+
+    <!-- Section Two - Canvas & Animation -->
+    <section class="section" id="section-two">
+        <div class="canvas-container">
+            <canvas id="canvas-two"></canvas>
+        </div>
+        <div class="section-two-overlay"></div>
+        <div class="section-two-split-text">
+            <div class="split-text-item">
+                <p>You know the danger</p>
+            </div>
+            <div class="split-text-item">
+                <p>Yet you can't stop</p>
+            </div>
+        </div>
+        <div class="section-two-post-text">
+            <h3>You Know It's Hurting You</h3>
+            <p>Yet you keep going back, again and again.</p>
+        </div>
+    </section>
+
+    <!-- Section Three -->
+    <section class="section" id="section-three">
+        <div class="section-three-bg"></div>
+        <div class="green-tint"></div>
+        <div class="section-three-text craving-text">
+            <p>AND CRAVING NEVER ENDS</p>
+        </div>
+        <div class="section-three-text hurting-text">
+            <h2>You Know It's Hurting You.</h2>
+            <p>Yet you keep going back, again and again.</p>
+        </div>
+        <div class="section-three-text stop-text">
+            <h2>But You Can Stop.</h2>
+            <p>Take control, break the cycle, and start breathing free again.</p>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <section class="footer-section" id="footer">
+        <div class="footer-content">
+            <h2>Your Journey Starts Here</h2>
+            <p>
+                AEROVE is committed to helping you break free from harmful habits and reclaim your life. 
+                With our evidence-based approach and compassionate support, lasting change is possible.
+            </p>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#support">Support</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AEROVE. All rights reserved. Breaking free together.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Lenis for smooth scrolling
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            smoothTouch: false,
+            touchMultiplier: 2
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Initialize Section One Canvas Animation
+        function initSectionOne() {
+            const container = document.getElementById('section-one');
+            const canvas = document.getElementById('canvas-one');
+            const overlay = document.querySelector('.section-one-overlay');
+            const headline = document.querySelector('.section-one-text h2');
+            const subtext = document.querySelector('.section-one-text p');
+
+            if (!canvas) return;
+            const context = canvas.getContext('2d');
+
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drawPlaceholder();
+            }
+
+            // Draw placeholder gradient
+            function drawPlaceholder() {
+                const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, 'rgba(65, 195, 168, 0.1)');
+                gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+                gradient.addColorStop(1, 'rgba(65, 195, 168, 0.05)');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Add subtle animations
+                context.strokeStyle = 'rgba(65, 195, 168, 0.1)';
+                context.lineWidth = 2;
+                context.beginPath();
+                context.arc(canvas.width / 2, canvas.height / 2, 150, 0, Math.PI * 2);
+                context.stroke();
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Animation timeline
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: container,
+                    start: 'top top',
+                    end: '+=300%',
+                    scrub: 1,
+                    pin: true,
+                }
+            });
+
+            tl.fromTo(headline, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' }, 0);
+            tl.fromTo(subtext, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' }, 0.2);
+            tl.to([headline, subtext], { opacity: 0, duration: 0.25, ease: 'power2.in' }, 0.6);
+            tl.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.1 }, 0.9);
+        }
+
+        // Initialize Section Two Canvas Animation
+        function initSectionTwo() {
+            const container = document.getElementById('section-two');
+            const canvas = document.getElementById('canvas-two');
+            const overlay = document.querySelector('.section-two-overlay');
+            const splitText = document.querySelector('.section-two-split-text');
+            const postText = document.querySelector('.section-two-post-text');
+
+            if (!canvas) return;
+            const context = canvas.getContext('2d');
+
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drawPlaceholder();
+            }
+
+            // Draw placeholder gradient
+            function drawPlaceholder() {
+                const gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height));
+                gradient.addColorStop(0, 'rgba(65, 195, 168, 0.15)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Animation timeline
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: container,
+                    start: 'top top',
+                    end: '+=400%',
+                    scrub: 1,
+                    pin: true,
+                }
+            });
+
+            tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, duration: 0.1 }, 0);
+            tl.fromTo(splitText, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 0.45);
+            tl.to(splitText, { opacity: 0, y: -30, duration: 0.2, ease: 'power2.in' }, 0.75);
+            tl.fromTo(postText, { opacity: 0, scale: 0.98 }, { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }, 0.78);
+        }
+
+        // Initialize Section Three Animation
+        function initSectionThree() {
+            const container = document.getElementById('section-three');
+            const cravingText = document.querySelector('.craving-text');
+            const hurtingText = document.querySelector('.hurting-text');
+            const stopText = document.querySelector('.stop-text');
+            const greenTint = document.querySelector('.green-tint');
+
+            ScrollTrigger.create({
+                trigger: container,
+                start: 'top top',
+                end: '+=400%',
+                pin: true,
+            });
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: container,
+                    start: 'top center',
+                    end: '+=200%',
+                    scrub: 1,
+                }
+            });
+
+            tl.fromTo(cravingText, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0);
+            tl.to(cravingText, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 0.7);
+            tl.fromTo(hurtingText, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.7);
+            tl.to(hurtingText, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 1.3);
+            tl.fromTo(greenTint, { opacity: 0 }, { opacity: 0.15, duration: 0.8, ease: 'power2.out' }, 1.3);
+            tl.fromTo(stopText, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.3);
+        }
+
+        // Initialize all sections when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initSectionOne();
+            initSectionTwo();
+            initSectionThree();
+            ScrollTrigger.refresh();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            ScrollTrigger.refresh();
+        });
+    </script>
+</body>
+</html>
